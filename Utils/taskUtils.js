@@ -1,24 +1,59 @@
-var fs = require('fs');
-const path = require('path');
-const dbFile = path.join(__dirname, '..', '/db.json');
-
+const db = require('../models');
 const findAll = async () => {
-    let dbData = await JSON.parse(fs.readFileSync(dbFile));
+    const dbData = await db.Task.findAll()
+
     console.log('dbData is', dbData);
-    return dbData
+    return dbData;
 }
 
 const findOne = async (title) => {
-    let dbData = await JSON.parse(fs.readFileSync(dbFile));
+    let dbData = await db.Task.findOne({
+        where: {
+            title: title
+        }
+    });
     console.log('dbData is', dbData);
-    return dbData[title];
+    return dbData;
+}
+const addOne = async (data) => {
+    try {
+        let dbData = await db.Task.create(data)
+        console.log('dbData is', dbData);
+        return { error: false, msg: 'OK' };
+    } catch (e) {
+        return { error: true };
+    }
+}
+const deleteOne = async (title) => {
+    try {
+        console.log('title is', title);
+        let dbData = await db.Task.destroy({
+            where: {
+                title: title
+            }
+        })
+        console.log('dbData is', dbData);
+        return { error: false, msg: 'OK' };
+    } catch (e) {
+        return { error: true };
+    }
 }
 const updateData = async (dbData) => {
     try {
-        let dbResult = await fs.writeFileSync(dbFile, JSON.stringify(dbData), 'utf-8');
+        const title = dbData.title;
+        delete dbData.title;
+        let dbResult = await db.Task.update(
+            dbData, {
+            where: {
+                title: title
+            }
+        }
+
+        )
         console.log('dbResult written data is ', dbResult);
         return { error: false, msg: 'OK' };
     } catch (e) {
+        console.log('error is ', e);
         return { error: true };
     }
 }
@@ -26,5 +61,7 @@ const updateData = async (dbData) => {
 module.exports = {
     findAll,
     findOne,
-    updateData
+    updateData,
+    addOne,
+    deleteOne,
 }

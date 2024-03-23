@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "kemwxkii",
+    "password": "eiz7hgxe6LcPaS7WGVVLnifKmjqUG4h_",
+    "database": "kemwxkii",
+    "host": "cornelius.db.elephantsql.com",
+    "dialect": "postgres",
+    "ssl": false
+  },
+  "test": {
+    "username": "kemwxkii",
+    "password": "eiz7hgxe6LcPaS7WGVVLnifKmjqUG4h_",
+    "database": "kemwxkii",
+    "host": "cornelius.db.elephantsql.com",
+    "dialect": "postgres",
+    "ssl": false
+  },
+  "production": {
+    "username": "kemwxkii",
+    "password": "eiz7hgxe6LcPaS7WGVVLnifKmjqUG4h_",
+    "database": "kemwxkii",
+    "host": "cornelius.db.elephantsql.com",
+    "dialect": "postgres",
+    "ssl": false
+  }
+}

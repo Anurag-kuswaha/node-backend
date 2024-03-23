@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const taskUtils  = require('../Utils/taskUtils');
+const taskUtils = require('../Utils/taskUtils');
 /**
  *  add the task with the approriate details 
  */
@@ -9,14 +9,14 @@ router.post('/add', async (req, res, next) => {
     try {
         console.log('body data is ', req.body);
         const data = req.body;
-        if(!req.body || !req.body.title || !req.body.description || !req.body.status){
+        if (!req.body || !req.body.title || !req.body.description || !req.body.status) {
             return res.status(400).send({ error: true, msg: `Details missing` })
         }
-        let dbData = await taskUtils.findAll()
-        // adding the data
-        dbData[data.title] = data
-        console.log('new dbData is ', dbData);
-        const newData = await taskUtils.updateData(dbData);
+        let dbData = await taskUtils.findOne(req.body.title);
+        if (dbData) {
+            return res.status(200).send({ error: true, msg: 'Task already exist, please try to update' });
+        }
+        const newData = await taskUtils.addOne(data);
         let msg = 'Tasks added successfully'
         if (newData.error) {
             msg = 'some error occured';
@@ -34,13 +34,10 @@ router.post('/add', async (req, res, next) => {
 router.get('/list', async (req, res, next) => {
     try {
         let dbData = await taskUtils.findAll();
-        let dbFormatted = []
-        Object.keys(dbData).forEach( (props)=>{
-            dbFormatted.push(dbData[props]) ;
-        })
-        console.log('dbData is', dbFormatted);
-        let length = Object.keys(dbData).length ;
-        res.status(200).send({ error: false, length, data: dbFormatted });
+
+
+
+        res.status(200).send({ error: false, length: dbData.length, data: dbData });
     } catch (e) {
         console.log('error is', e);
         res.status(400).send({ error: true, msg: `error occured at ${e.message}` })
@@ -58,15 +55,11 @@ router.patch('/update/:title', async (req, res, next) => {
         if (dbData) {
             const newData = req.body;
             console.log('new data is ', newData);
-            let dbData = await taskUtils.findAll();
-            if (newData.description)
-                dbData[title].description = newData.description
-            if (newData.status)
-                dbData[title].status = newData.status
-            const dbResult = await taskUtils.updateData(dbData);
+            const dbResult = await taskUtils.updateData(newData);
             let msg = 'Tasks updated successfully'
             if (dbResult.error) {
                 msg = 'some error occured';
+                return res.status(200).send({ error: true, msg });
             }
             return res.status(200).send({ error: false, msg });
 
@@ -87,15 +80,11 @@ router.delete('/delete/:title', async (req, res, next) => {
         const title = decodeURIComponent(req.params.title);
         let dbData = await taskUtils.findOne(title);
         if (dbData) {
-            const newData = req.body;
-            console.log('new data is ', newData);
-            let dbData = await taskUtils.findAll();
-            //delete from the DB
-            delete dbData[title];
-            const dbResult = await taskUtils.updateData(dbData);
+            const dbResult = await taskUtils.deleteOne(title);
             let msg = 'Tasks Deleted successfully'
             if (dbResult.error) {
                 msg = 'some error occured';
+                return res.status(200).send({ error: true, msg });
             }
             return res.status(200).send({ error: false, msg });
 
