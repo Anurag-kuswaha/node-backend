@@ -7,8 +7,11 @@ const taskUtils  = require('../Utils/taskUtils');
 
 router.post('/add', async (req, res, next) => {
     try {
-        console.log(req.body);
-        const data = req.body
+        console.log('body data is ', req.body);
+        const data = req.body;
+        if(!req.body || !req.body.title || !req.body.description || !req.body.status){
+            return res.status(400).send({ error: true, msg: `Details missing` })
+        }
         let dbData = await taskUtils.findAll()
         // adding the data
         dbData[data.title] = data
@@ -31,8 +34,13 @@ router.post('/add', async (req, res, next) => {
 router.get('/list', async (req, res, next) => {
     try {
         let dbData = await taskUtils.findAll();
+        let dbFormatted = []
+        Object.keys(dbData).forEach( (props)=>{
+            dbFormatted.push(dbData[props]) ;
+        })
+        console.log('dbData is', dbFormatted);
         let length = Object.keys(dbData).length ;
-        res.status(200).send({ error: false, length, dbData });
+        res.status(200).send({ error: false, length, data: dbFormatted });
     } catch (e) {
         console.log('error is', e);
         res.status(400).send({ error: true, msg: `error occured at ${e.message}` })
@@ -44,7 +52,8 @@ router.get('/list', async (req, res, next) => {
  */
 router.patch('/update/:title', async (req, res, next) => {
     try {
-        const title = req.params.title;
+        const title = decodeURIComponent(req.params.title);
+        console.log('title is', title);
         let dbData = await taskUtils.findOne(title);
         if (dbData) {
             const newData = req.body;
@@ -62,7 +71,7 @@ router.patch('/update/:title', async (req, res, next) => {
             return res.status(200).send({ error: false, msg });
 
         } else {
-            return res.status(400).send({ error: true, msg: `Status doesn't exists` });
+            return res.status(400).send({ error: true, msg: `Task doesn't exists` });
         }
     } catch (e) {
         console.log('error is', e);
@@ -75,7 +84,7 @@ router.patch('/update/:title', async (req, res, next) => {
  */
 router.delete('/delete/:title', async (req, res, next) => {
     try {
-        const title = req.params.title;
+        const title = decodeURIComponent(req.params.title);
         let dbData = await taskUtils.findOne(title);
         if (dbData) {
             const newData = req.body;
