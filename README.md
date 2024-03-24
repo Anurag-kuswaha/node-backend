@@ -5,14 +5,6 @@
 
  code strcuture
 
- .
-└── node-backend/
-    ├── Routes/
-    │   └── task.js - logic and error handling
-    ├── Utils/
-    │   └── taskUtils.js - dealing with Database
-    ├── models/
-    │   └── task.js
-    ├── server.js - server starting point
-    ├── routes.js
-    └── package.json  
+
+  
+<img width="500" alt="Screenshot 2024-03-24 at 10 06 05" src="https://github.com/Anurag-kuswaha/node-backend/assets/73064862/30a28ef5-a81e-4226-8cd5-b0b5a011af45">
