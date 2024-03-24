@@ -1,6 +1,6 @@
 # node-backend
  Assignment of Pesto tech for Anurag Kushwaha
-
+Server runs on http://localhost:30001 
  ## Backend App = NodeJs, ExpressJs, postgres and Sequelize
 
  code strcuture
